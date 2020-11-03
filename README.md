@@ -4,7 +4,7 @@ Unofficial implementation of the Radar Semantic Segmentation Network (RSS-Net) p
 
 The architecture has been slightly changed to match the [CARRADA dataset](https://arxiv.org/abs/2005.01456).
 
-The CARRADA dataset is available on Arthur Ouaknine's personal web page at this link: (https://arthurouaknine.github.io/codeanddata/carrada)[https://arthurouaknine.github.io/codeanddata/carrada].
+The CARRADA dataset is available on Arthur Ouaknine's personal web page at this link: [https://arthurouaknine.github.io/codeanddata/carrada](https://arthurouaknine.github.io/codeanddata/carrada).
 
 ---
 
