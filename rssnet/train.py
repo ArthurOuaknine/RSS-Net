@@ -9,7 +9,7 @@ from rssnet.models.rssnet import RSSNet
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--cfg', help='Path to config file.',
-                        default='config.json')
+                        default='model_configs/rssnet_config.json')
     args = parser.parse_args()
     cfg_path = args.cfg
     with open(cfg_path, 'r') as fp:
