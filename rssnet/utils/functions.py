@@ -6,9 +6,10 @@ import torch.nn as nn
 from PIL import Image
 
 from rssnet.loaders.dataloaders import Rescale, Flip
+from rssnet.utils import RSSNET_HOME
 
 
-def get_class_weights(carrada_path, signal_type):
+def get_class_weights(path_to_weights, signal_type):
     """Load class weights for custom loss"""
     if signal_type in ('range_angle', 'rdra2ra', 'rad2ra'):
         file_name = 'ra_weights.json'
@@ -16,7 +17,7 @@ def get_class_weights(carrada_path, signal_type):
         file_name = 'rd_weights.json'
     else:
         raise ValueError('Signal type {} is not supported.'.format(signal_type))
-    with open(os.path.join(carrada_path, file_name), 'r') as fp:
+    with open(os.path.join(path_to_weights, file_name), 'r') as fp:
         weights = json.load(fp)
     weights = np.array([weights['background'], weights['pedestrian'],
                         weights['cyclist'], weights['car']])
@@ -158,9 +159,10 @@ def normalize(data, signal_type, carrada_path, norm_type='local'):
         raise TypeError('Signal {} is not supported.'.format(signal_type))
 
 
-def define_loss(paths, signal_type, custom_loss, device):
+def define_loss(signal_type, custom_loss, device):
     if custom_loss == 'wce':
-        weights = get_class_weights(paths['carrada'], signal_type)
+        path_to_weights = os.path.join(RSSNET_HOME, 'model_configs')
+        weights = get_class_weights(path_to_weights, signal_type)
         loss = nn.CrossEntropyLoss(weight=weights.to(device).float())
     else:
         loss = nn.CrossEntropyLoss()

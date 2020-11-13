@@ -3,9 +3,9 @@ import os
 import json
 from torch.utils.data import DataLoader
 
-from loaders.dataset import Carrada
-from loaders.dataloaders import SequenceCarradaDataset
-from radar_utils.paths import Paths
+from rssnet.loaders.dataset import Carrada
+from rssnet.loaders.dataloaders import SequenceCarradaDataset
+from rssnet.utils.paths import Paths
 
 
 class Initializer:

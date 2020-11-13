@@ -1,10 +1,10 @@
+"""Main script to train RSS-Net"""
 import argparse
-import os
 import json
-from radar_utils import RADAR_HOME
-from radar_domain.carrada.segmentation.initializer import Initializer
-from radar_domain.carrada.segmentation.model import Model
-from models.rssnet import RSSNet
+
+from rssnet.learners.initializer import Initializer
+from rssnet.learners.model import Model
+from rssnet.models.rssnet import RSSNet
 
 def main():
     parser = argparse.ArgumentParser()

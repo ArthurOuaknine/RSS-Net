@@ -7,11 +7,10 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision.utils import make_grid
 
-from utils.functions import transform_masks_viz, get_metrics, normalize, define_loss,
-get_transformations, get_qualitatives
-from utils.metrics import Evaluator
-from loaders.dataloaders import FrameCarradaDataset, MultiFrameCarradaDataset
-from radar_utils.paths import Paths
+from rssnet.loaders.dataloaders import MultiFrameCarradaDataset
+from rssnet.utils.functions import transform_masks_viz, get_metrics, normalize, define_loss, get_transformations, get_qualitatives
+from rssnet.utils.metrics import Evaluator
+from rssnet.utils.paths import Paths
 
 
 class Tester:
@@ -39,7 +38,7 @@ class Tester:
         net.eval()
         transformations = get_transformations(self.transform_names, split='test',
                                               sizes=(self.w_size, self.h_size))
-        criterion = define_loss(self.paths, self.signal_type, self.custom_loss, self.device)
+        criterion = define_loss(self.signal_type, self.custom_loss, self.device)
         running_losses = list()
         metrics = Evaluator(num_class=self.nb_classes)
         if iteration:
@@ -48,29 +47,16 @@ class Tester:
             for i, sequence_data in enumerate(seq_loader):
                 seq_name, seq = sequence_data
                 path_to_frames = os.path.join(self.paths['carrada'], seq_name[0])
-                if (self.signal_type in ('range_angle', 'range_doppler') and self.n_input_ch > 1) or \
-                   (self.signal_type in ('rdra2rd', 'rdra2ra') and self.n_input_ch > 2) or \
-                   (self.signal_type in ('rad2rd', 'rad2ra') and self.n_input_ch > 64):
-                    frame_dataloader = DataLoader(MultiFrameCarradaDataset(seq,
-                                                                           self.annot_type,
-                                                                           self.signal_type,
-                                                                           path_to_frames,
-                                                                           self.process_signal,
-                                                                           self.n_input_ch,
-                                                                           transformations),
-                                                  shuffle=False,
-                                                  batch_size=self.batch_size,
-                                                  num_workers=4)
-                else:
-                    frame_dataloader = DataLoader(FrameCarradaDataset(seq,
-                                                                      self.annot_type,
-                                                                      self.signal_type,
-                                                                      path_to_frames,
-                                                                      self.process_signal,
-                                                                      transformations),
-                                                  shuffle=False,
-                                                  batch_size=self.batch_size,
-                                                  num_workers=4)
+                frame_dataloader = DataLoader(MultiFrameCarradaDataset(seq,
+                                                                       self.annot_type,
+                                                                       self.signal_type,
+                                                                       path_to_frames,
+                                                                       self.process_signal,
+                                                                       self.n_input_ch,
+                                                                       transformations),
+                                              shuffle=False,
+                                              batch_size=self.batch_size,
+                                              num_workers=4)
                 if iteration and i == rand_seq:
                     rand_frame = np.random.randint(len(frame_dataloader))
                 if get_quali:

@@ -10,10 +10,10 @@ from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data import DataLoader
 
-from utils.functions import normalize, define_loss, get_transformations
-from utils.tensorboard_visualizer import TensorboardVisualizer
-from loaders.dataloaders import FrameCarradaDataset, MultiFrameCarradaDataset
-from learners.tester import Tester
+from rssnet.utils.functions import normalize, define_loss, get_transformations
+from rssnet.utils.tensorboard_visualizer import TensorboardVisualizer
+from rssnet.loaders.dataloaders import MultiFrameCarradaDataset
+from rssnet.learners.tester import Tester
 
 
 class Model(nn.Module):
@@ -58,7 +58,7 @@ class Model(nn.Module):
         self._set_seeds()
         self.net.apply(self._init_weights)
         running_losses = list()
-        criterion = define_loss(self.paths, self.signal_type, self.custom_loss, self.device)
+        criterion = define_loss(self.signal_type, self.custom_loss, self.device)
         optimizer = optim.Adam(self.net.parameters(), lr=self.lr)
         scheduler = ExponentialLR(optimizer, gamma=0.9)
         iteration = 0
@@ -71,29 +71,16 @@ class Model(nn.Module):
             for _, sequence_data in enumerate(train_loader):
                 seq_name, seq = sequence_data
                 path_to_frames = os.path.join(self.paths['carrada'], seq_name[0])
-                if (self.signal_type in ('range_angle', 'range_doppler') and self.n_input_ch > 1) or \
-                   (self.signal_type in ('rdra2rd', 'rdra2ra') and self.n_input_ch > 2) or \
-                   (self.signal_type in ('rad2rd', 'rad2ra') and self.n_input_ch > 64):
-                    frame_dataloader = DataLoader(MultiFrameCarradaDataset(seq,
-                                                                           self.annot_type,
-                                                                           self.signal_type,
-                                                                           path_to_frames,
-                                                                           self.process_signal,
-                                                                           self.n_input_ch,
-                                                                           transformations),
-                                                  shuffle=False,
-                                                  batch_size=self.batch_size,
-                                                  num_workers=4)
-                else:
-                    frame_dataloader = DataLoader(FrameCarradaDataset(seq,
-                                                                      self.annot_type,
-                                                                      self.signal_type,
-                                                                      path_to_frames,
-                                                                      self.process_signal,
-                                                                      transformations),
-                                                  shuffle=False,
-                                                  batch_size=self.batch_size,
-                                                  num_workers=4)
+                frame_dataloader = DataLoader(MultiFrameCarradaDataset(seq,
+                                                                       self.annot_type,
+                                                                       self.signal_type,
+                                                                       path_to_frames,
+                                                                       self.process_signal,
+                                                                       self.n_input_ch,
+                                                                       transformations),
+                                              shuffle=False,
+                                              batch_size=self.batch_size,
+                                              num_workers=4)
                 for _, frame in enumerate(frame_dataloader):
                     data = frame['matrix'].to(self.device).float()
                     mask = frame['mask'].to(self.device).float()
