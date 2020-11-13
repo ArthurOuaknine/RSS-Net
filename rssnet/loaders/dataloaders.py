@@ -11,7 +11,10 @@ from rssnet.utils.paths import Paths
 
 class SequenceCarradaDataset(Dataset):
     """DataLoader class for Carrada sequences
-    Only shuffle sequences
+
+    PARAMETERS
+    ----------
+    dataset: CARRADA dataset class
     """
 
     def __init__(self, dataset):
@@ -29,7 +32,7 @@ class SequenceCarradaDataset(Dataset):
 class MultiFrameCarradaDataset(Dataset):
     """DataLoader class for Carrada sequences
     Load frames, only for semantic segmentation
-    Specific to load several frames (sub sequences)
+    Dataloader allows multi frame loading.
 
     PARAMETERS
     ----------
@@ -38,11 +41,14 @@ class MultiFrameCarradaDataset(Dataset):
         Supported annotations are 'sparse', 'dense'
     signal_type: str
         Supported signals are 'range_doppler', 'range_angle'
-        Comming soon: 'angle_doppler', 'rad'
     path_to_frames: str
         Path to the frames of a given sequence (folder of the sequence)
     process_signal: bool
         Load signal w/ or w/o processing (power, log transform)
+    n_frames: int
+        Number of consecutive frames to load
+    transformations: None or list of functions
+        List of functions to preprocess the input data
     """
 
     RD_SHAPE = (256, 64)
@@ -59,11 +65,12 @@ class MultiFrameCarradaDataset(Dataset):
         self.process_signal = process_signal
         self.n_frames = n_frames
         self.transformations = transformations
-        self.dataset = self.dataset[self.n_frames-1:] # remove n first frames
+        self.dataset = self.dataset[self.n_frames-1:]  # remove n first frames
         self.path_to_annots = os.path.join(self.path_to_frames, 'annotations',
                                            self.annotation_type)
 
     def transform(self, frame):
+        """Method to apply a list of function for a given frame"""
         if self.transformations is not None:
             for function in self.transformations:
                 frame = function(frame)
@@ -112,10 +119,11 @@ class MultiFrameCarradaDataset(Dataset):
 class Rescale:
     """Rescale the image in a sample to a given size.
 
-    Args:
-        output_size (tuple or int): Desired output size. If tuple, output is
-            matched to output_size. If int, smaller of image edges is matched
-            to output_size keeping aspect ratio the same.
+    PARAMETERS
+    ----------
+    output_size (tuple or int): Desired output size. If tuple, output is
+        matched to output_size. If int, smaller of image edges is matched
+        to output_size keeping aspect ratio the same.
     """
 
     def __init__(self, output_size):
@@ -141,7 +149,12 @@ class Rescale:
 
 class Flip:
     """
-    Randomly flip the matrix with a proba p
+    Randomly flip the matrix.
+
+    PARAMETERS
+    ----------
+    proba: float
+        Proba to flip on each axis of the input.
     """
 
     def __init__(self, proba):

@@ -1,4 +1,4 @@
-"""Initializer class to prepare training"""
+"""Class to initialize training pipeline"""
 import os
 import json
 from torch.utils.data import DataLoader
@@ -9,7 +9,13 @@ from rssnet.utils.paths import Paths
 
 
 class Initializer:
-    """Class to prepare training model"""
+    """Class to initialize training pipeline
+
+    PARAMETERS
+    ----------
+    cfg: dict
+        Config dict containing the parameters for training
+    """
 
     def __init__(self, cfg):
         self.cfg = cfg

@@ -5,6 +5,12 @@ from sklearn.metrics import confusion_matrix
 
 
 class Evaluator:
+    """Class to evaluate metrics on a dataset with cumulated batches
+
+    PARAMETERS
+    ----------
+    num_class: int
+    """
 
     def __init__(self, num_class):
         self.num_class = num_class
@@ -59,8 +65,10 @@ class Evaluator:
         return matrix
 
     def add_batch(self, labels, predictions):
+        """Method to update performances with a new batch of prediction"""
         assert labels.shape == predictions.shape
         self.confusion_matrix += self._generate_matrix(labels, predictions)
 
     def reset(self):
+        """Method to reset the confusion matrix (performances)"""
         self.confusion_matrix = np.zeros((self.num_class,) * 2)

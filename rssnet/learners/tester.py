@@ -15,6 +15,16 @@ from rssnet.utils.paths import Paths
 
 class Tester:
 
+    """
+    Class to test a model
+
+    PARAMETERS
+    ----------
+    cfg: dict
+        Contains the parameters of the loaded model
+    vizualizer: Pytorch writer
+    """
+
     def __init__(self, cfg, vizualizer=None):
         self.cfg = cfg
         self.vizualizer = vizualizer
@@ -35,6 +45,25 @@ class Tester:
         self.test_results = dict()
 
     def predict(self, net, seq_loader, iteration=None, get_quali=False):
+        """
+        Method to generate prediction using a pretrained model.
+
+        PARAMETERS
+        ----------
+        net: Pytorch model
+        seq_loader: SequenceCarradaDataset
+            Dataloader of the CARRADA sequences
+        iteration: int
+            Specify an iteration to vizualize results
+        get_quali: Boolean
+            Records ground truth and predicted masks for all the dataset
+
+        RETURNS
+        -------
+        test_results: dict
+            Metrics on the tested dataset
+        """
+
         net.eval()
         transformations = get_transformations(self.transform_names, split='test',
                                               sizes=(self.w_size, self.h_size))
@@ -99,11 +128,14 @@ class Tester:
         return self.test_results
 
     def write_params(self, path):
+        """Method to write performances on the dataset"""
         with open(path, 'w') as fp:
             json.dump(self.test_results, fp)
 
     def set_device(self, device):
+        """Set device to use during inference (cuda, cpu)"""
         self.device = device
 
     def set_annot_type(self, annot_type):
+        """Method to set the type of annotation used"""
         self.annot_type = annot_type

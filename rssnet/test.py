@@ -1,3 +1,4 @@
+"""Script to test a pretrained model"""
 import argparse
 import os
 import json

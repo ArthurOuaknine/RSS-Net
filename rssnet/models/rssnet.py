@@ -1,3 +1,4 @@
+"""Script defining the RSS-Net architecture"""
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -39,7 +40,7 @@ class ConvBlock(nn.Module):
 
 
 class ASPPBlock(nn.Module):
-
+    """ Parallel conv blocks with different dilation rate"""
     def __init__(self, in_ch, out_ch=256):
         super().__init__()
         self.global_avg_pool = nn.AvgPool2d((64, 64))
@@ -62,6 +63,14 @@ class ASPPBlock(nn.Module):
 
 
 class RSSNet(nn.Module):
+    """RSSNet architecture
+
+    PARAMETERS
+    ----------
+    nb_classes: int
+    n_channels: int
+        Number of input channels
+    """
 
     def __init__(self, nb_classes, n_channels):
         super().__init__()

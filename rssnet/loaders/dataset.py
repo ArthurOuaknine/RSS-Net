@@ -71,6 +71,7 @@ class Carrada:
                 raise TypeError('Type {} is not supported for splits.'.format(split))
 
     def get(self, split):
+        """"Method to get a split of the dataset"""
         if split == 'Train':
             return self.train
         if split == 'Validation':

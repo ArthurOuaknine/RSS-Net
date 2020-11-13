@@ -1,3 +1,4 @@
+"""Multiple functions used in the pipeline"""
 import os
 import json
 import numpy as np
@@ -10,7 +11,19 @@ from rssnet.utils import RSSNET_HOME
 
 
 def get_class_weights(path_to_weights, signal_type):
-    """Load class weights for custom loss"""
+    """Load class weights for custom loss
+
+    PARAMETERS
+    ----------
+    path_to_weights: str
+    signal_type: str
+        Supported: 'range_doppler', 'range_angle'
+
+    RETURNS
+    -------
+    weights: torch tensor
+        Weights by class to use in the CE loss
+    """
     if signal_type in ('range_angle', 'rdra2ra', 'rad2ra'):
         file_name = 'ra_weights.json'
     elif signal_type in ('range_doppler', 'rdra2rd', 'rad2rd'):
@@ -32,6 +45,7 @@ def transform_masks_viz(masks, nb_classes):
 
 
 def get_metrics(metrics, loss):
+    """Structure metrics and results in a dict"""
     metrics_values = dict()
     metrics_values['loss'] = loss.item()
     acc, acc_by_class = metrics.get_pixel_acc_class()  # harmonic_mean=True)
@@ -49,23 +63,26 @@ def get_metrics(metrics, loss):
     return metrics_values
 
 
-def old_normalize(data, signal_type):
-    if signal_type in ('rdra2rd', 'rdra2ra'):
-        # Normalize representation independently
-        for i in range(data.shape[1]):
-            min_value = torch.min(data[:, i, :, :])
-            max_value = torch.max(data[:, i, :, :])
-            data[:, i, :, :] = torch.div(torch.sub(data[:, i, :, :], min_value),
-                                         torch.sub(max_value, min_value))
-        return data
-    else:
-        min_value = torch.min(data)
-        max_value = torch.max(data)
-        norm_data = torch.div(torch.sub(data, min_value), torch.sub(max_value, min_value))
-        return norm_data
-
-
 def normalize(data, signal_type, carrada_path, norm_type='local'):
+    """Function to normalize the input data.
+    Note that the 'train' and 'tvt' norm methods requires specific files
+    containing statistics on the dataset.
+
+    PARAMETERS
+    ----------
+    data: torch tensor
+        Matrix to normalize
+    signal_type: str
+    carrada_path: str
+        Path to the files contraining statistics on the dataset
+    norm_type: str
+        Supported: 'local', 'train', 'tvt'
+
+    RETURNS
+    -------
+    norm_data: torch tensor
+    """
+
     if signal_type in ('range_doppler', 'range_angle', 'rad2rd', 'rad2ra') and \
        norm_type in ('local'):
         min_value = torch.min(data)
@@ -160,6 +177,21 @@ def normalize(data, signal_type, carrada_path, norm_type='local'):
 
 
 def define_loss(signal_type, custom_loss, device):
+    """Define loss for training pipeline
+
+    PARAMETERS
+    ----------
+    signal_type: str
+    custom_loss: str
+        Name of the custom loss to use.
+        Default: use Cross Entropy
+    device: str
+        Supported: 'cuda', 'cpu'
+
+    RETURNS
+    -------
+    loss: torch function
+    """
     if custom_loss == 'wce':
         path_to_weights = os.path.join(RSSNET_HOME, 'model_configs')
         weights = get_class_weights(path_to_weights, signal_type)
@@ -170,6 +202,21 @@ def define_loss(signal_type, custom_loss, device):
 
 
 def get_transformations(transform_names, split='train', sizes=None):
+    """Get transformation functions to apply to the input data
+
+    PARAMETERS
+    ----------
+    transform_names: str
+        List of the transformation separated by comma
+    split: str
+        Split currently processed. Default: 'train'
+    sizes: tuple of ints or int
+        Sizes fore Rescale transformation
+
+    RETURNS
+    -------
+    transformations: list of functions
+    """
     transformations = list()
     if 'rescale' in transform_names:
         transformations.append(Rescale(sizes))
@@ -189,6 +236,22 @@ def mask_to_img(mask):
 
 
 def get_qualitatives(outputs, masks, paths, seq_name, quali_iter):
+    """Method to get qualitative results
+
+    PARAMETERS
+    ----------
+    outputs: torch tensor
+        Predicted masks
+    masks: torch tensor
+        Ground truth masks
+    seq_name: str
+    quali_iter: int
+        Current iteration on the dataset
+
+    RETURNS
+    -------
+    quali_iter: str
+    """
     folder_path = os.path.join(paths['temp'], seq_name[0])
     os.makedirs(folder_path, exist_ok=True)
     outputs = torch.argmax(outputs, axis=1).cpu().numpy()

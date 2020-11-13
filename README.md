@@ -59,5 +59,4 @@ $ python test.py --cfg /root/logs/carrada/rssnet/range_angle/name_of_the_model/c
 ---
 ### To Do
 + Clear unused options
-+ Comment code
 + Full Train / Test verifications

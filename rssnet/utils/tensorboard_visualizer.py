@@ -3,6 +3,13 @@ from torch.utils.tensorboard import SummaryWriter
 
 class TensorboardVisualizer:
 
+    """Class to visualize performances during training using Tensorboard
+
+    PARAMETERS
+    ----------
+    writer: torch writer
+    """
+
     def __init__(self, writer):
         self.writer = writer
 
@@ -115,6 +122,7 @@ class TensorboardVisualizer:
                                iteration)
 
     def update_detection_val_metrics(self, metrics, iteration):
+        """Detection metrics"""
         self.writer.add_scalar('AveragePrecision/Mean', metrics['map'],
                                iteration)
         self.writer.add_scalar('AveragePrecision/Pedestrian',
@@ -128,11 +136,13 @@ class TensorboardVisualizer:
                                iteration)
 
     def update_img_masks(self, pred_grid, gt_grid, iteration):
+        """Add images to Tensorboard"""
         self.writer.add_image('Predicted_masks', pred_grid, iteration)
         self.writer.add_image('Ground_truth_masks', gt_grid, iteration)
 
     def update_multi_img_masks(self, rd_pred_grid, rd_gt_grid,
                                ra_pred_grid, ra_gt_grid, iteration):
+        """Add multiple signal images to Tensorboard"""
         self.writer.add_image('Range_Doppler/Predicted_masks', rd_pred_grid, iteration)
         self.writer.add_image('Range_Doppler/Ground_truth_masks', rd_gt_grid, iteration)
         self.writer.add_image('Range_angle/Predicted_masks', ra_pred_grid, iteration)

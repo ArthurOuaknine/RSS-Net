@@ -18,6 +18,16 @@ from rssnet.learners.tester import Tester
 
 class Model(nn.Module):
 
+    """Class to train a pytorch model
+
+    PARAMETERS
+    ----------
+    net: Pytorch model
+    data: dict
+        Contains the config file for training, the dict with necessary paths
+        and the dataloaders
+    """
+
     def __init__(self, net, data):
         super().__init__()
         self.net = net
@@ -51,6 +61,7 @@ class Model(nn.Module):
         self.results = dict()
 
     def train(self):
+        """Method to train the model."""
         self.writer.add_text('Comments', self.comments)
         train_loader, val_loader, test_loader = self.dataloaders
         transformations = get_transformations(self.transform_names,
@@ -143,6 +154,7 @@ class Model(nn.Module):
         self.writer.close()
 
     def _init_weights(self, m):
+        """Method to initialize weights"""
         if isinstance(m, nn.Linear):
             torch.nn.init.xavier_uniform_(m.weight)
             nn.init.constant_(m.bias, 0.)
@@ -155,6 +167,7 @@ class Model(nn.Module):
                 nn.init.constant_(m.bias, 0.)
 
     def _save_results(self):
+        """Method to save trained model and results"""
         with open(os.path.join(self.paths['results'], 'results.json'), "w") as fp:
             json.dump(self.results, fp)
         torch.save(self.net.state_dict(),
@@ -162,6 +175,7 @@ class Model(nn.Module):
                                 'model.pt'))
 
     def _set_seeds(self):
+        """Method to fix different seeds"""
         torch.cuda.manual_seed_all(self.torch_seed)
         torch.manual_seed(self.torch_seed)
         np.random.seed(self.numpy_seed)
