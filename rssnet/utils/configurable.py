@@ -12,3 +12,7 @@ class Configurable():
         config = configparser.ConfigParser()
         config.read(self.path_to_config)
         return config
+
+    def set(self, section, option, value):
+        """Set a value in the config file"""
+        self.config.set(section, option, value)
