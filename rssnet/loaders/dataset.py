@@ -1,6 +1,7 @@
 """Class to load the CARRADA dataset"""
 import os
 import json
+
 from rssnet.utils.paths import Paths
 
 

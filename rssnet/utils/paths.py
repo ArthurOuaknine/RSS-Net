@@ -1,5 +1,4 @@
 """Class to get global paths"""
-
 import os
 from rssnet.utils import RSSNET_HOME
 from rssnet.utils.configurable import Configurable
