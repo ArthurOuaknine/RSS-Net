@@ -73,7 +73,7 @@ class Model(nn.Module):
         optimizer = optim.Adam(self.net.parameters(), lr=self.lr)
         scheduler = ExponentialLR(optimizer, gamma=0.9)
         iteration = 0
-        best_val_acc = 0
+        best_val_prec = 0
         self.net.to(self.device)
 
         for epoch in range(self.nb_epochs):
@@ -123,27 +123,27 @@ class Model(nn.Module):
                         print('[Epoch {}/{}] Validation loss: {}'.format(epoch+1,
                                                                          self.nb_epochs,
                                                                          val_metrics['loss']))
-                        print('[Epoch {}/{}] Validation Pixel Acc: {}'.format(epoch+1,
-                                                                              self.nb_epochs,
-                                                                              val_metrics['acc']))
-                        print('[Epoch {}/{}] Validation Pixel Acc by class: '
+                        print('[Epoch {}/{}] Validation Pixel Prec: {}'.format(epoch+1,
+                                                                               self.nb_epochs,
+                                                                               val_metrics['prec']))
+                        print('[Epoch {}/{}] Validation Pixel Prec by class: '
                               '{}'.format(epoch+1,
                                           self.nb_epochs,
-                                          val_metrics['acc_by_class']))
+                                          val_metrics['prec_by_class']))
 
-                        if val_metrics['acc'] > best_val_acc and iteration > 0:
-                            best_val_acc = val_metrics['acc']
+                        if val_metrics['prec'] > best_val_prec and iteration > 0:
+                            best_val_prec = val_metrics['prec']
                             test_metrics = self.tester.predict(self.net, test_loader)
                             print('[Epoch {}/{}] Test loss: {}'.format(epoch+1,
                                                                        self.nb_epochs,
                                                                        test_metrics['loss']))
-                            print('[Epoch {}/{}] Test Pixel Acc: {}'.format(epoch+1,
-                                                                            self.nb_epochs,
-                                                                            test_metrics['acc']))
-                            print('[Epoch {}/{}] Test Pixel Acc by class: '
+                            print('[Epoch {}/{}] Test Pixel Prec: {}'.format(epoch+1,
+                                                                             self.nb_epochs,
+                                                                             test_metrics['prec']))
+                            print('[Epoch {}/{}] Test Pixel Prec by class: '
                                   '{}'.format(epoch+1,
                                               self.nb_epochs,
-                                              test_metrics['acc_by_class']))
+                                              test_metrics['prec_by_class']))
 
                             self.results['train_loss'] = train_loss.item()
                             self.results['val_metrics'] = val_metrics

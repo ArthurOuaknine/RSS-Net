@@ -48,12 +48,12 @@ def get_metrics(metrics, loss):
     """Structure metrics and results in a dict"""
     metrics_values = dict()
     metrics_values['loss'] = loss.item()
-    acc, acc_by_class = metrics.get_pixel_acc_class()  # harmonic_mean=True)
+    prec, prec_by_class = metrics.get_pixel_prec_class()  # harmonic_mean=True)
     recall, recall_by_class = metrics.get_pixel_recall_class()  # harmonic_mean=True)
     miou, miou_by_class = metrics.get_miou_class()  # harmonic_mean=True)
     dice, dice_by_class = metrics.get_dice_class()
-    metrics_values['acc'] = acc
-    metrics_values['acc_by_class'] = acc_by_class.tolist()
+    metrics_values['prec'] = prec
+    metrics_values['prec_by_class'] = prec_by_class.tolist()
     metrics_values['recall'] = recall
     metrics_values['recall_by_class'] = recall_by_class.tolist()
     metrics_values['miou'] = miou
@@ -252,7 +252,7 @@ def get_qualitatives(outputs, masks, paths, seq_name, quali_iter):
     -------
     quali_iter: str
     """
-    folder_path = os.path.join(paths['temp'], seq_name[0])
+    folder_path = os.path.join(paths['logs'], seq_name[0])
     os.makedirs(folder_path, exist_ok=True)
     outputs = torch.argmax(outputs, axis=1).cpu().numpy()
     masks = torch.argmax(masks, axis=1).cpu().numpy()

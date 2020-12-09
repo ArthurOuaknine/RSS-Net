@@ -54,9 +54,4 @@ To test a recorded model, you should specify the path to the configuration file 
 $ cd rss-net/rssnet/
 $ python test.py --cfg /root/logs/carrada/rssnet/range_angle/name_of_the_model/config.json
 ```
-
-
----
-### To Do
-+ Clear unused options
-+ Full Train / Test verifications
+Note: the current implementation of this script will generate qualitative results in your log folder. You can disable this behavior by setting `get_quali=False` in the parameters of the `predict()` method of the `Tester()` class.

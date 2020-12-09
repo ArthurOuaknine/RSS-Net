@@ -36,7 +36,7 @@ def test_model():
     testset = SequenceCarradaDataset(test)
     seq_testloader = DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
     tester.set_annot_type(cfg['annot_type'])
-    test_results = tester.predict(model, seq_testloader)
+    test_results = tester.predict(model, seq_testloader, get_quali=True)
     tester.write_params(test_results_path)
 
 if __name__ == '__main__':

@@ -43,19 +43,19 @@ class TensorboardVisualizer:
     def update_val_metrics(self, metrics, iteration):
         self.writer.add_scalar('losses/validation', metrics['loss'],
                                iteration)
-        self.writer.add_scalar('PixelAccuracy/Mean', metrics['acc'],
+        self.writer.add_scalar('PixelPrecision/Mean', metrics['prec'],
                                iteration)
-        self.writer.add_scalar('PixelAccuracy/Background',
-                               metrics['acc_by_class'][0],
+        self.writer.add_scalar('PixelPrecision/Background',
+                               metrics['prec_by_class'][0],
                                iteration)
-        self.writer.add_scalar('PixelAccuracy/Pedestrian',
-                               metrics['acc_by_class'][1],
+        self.writer.add_scalar('PixelPrecision/Pedestrian',
+                               metrics['prec_by_class'][1],
                                iteration)
-        self.writer.add_scalar('PixelAccuracy/Cyclist',
-                               metrics['acc_by_class'][2],
+        self.writer.add_scalar('PixelPrecision/Cyclist',
+                               metrics['prec_by_class'][2],
                                iteration)
-        self.writer.add_scalar('PixelAccuracy/Car',
-                               metrics['acc_by_class'][3],
+        self.writer.add_scalar('PixelPrecision/Car',
+                               metrics['prec_by_class'][3],
                                iteration)
         self.writer.add_scalar('PixelRecall/Mean', metrics['recall'],
                                iteration)
@@ -95,8 +95,8 @@ class TensorboardVisualizer:
         self.writer.add_scalar('validation_losses/range_angle', metrics['range_angle']['loss'],
                                iteration)
 
-        self.writer.add_scalar('Range_Doppler_metrics/PixelAccuracy',
-                               metrics['range_doppler']['acc'],
+        self.writer.add_scalar('Range_Doppler_metrics/PixelPrecision',
+                               metrics['range_doppler']['prec'],
                                iteration)
         self.writer.add_scalar('Range_Doppler_metrics/PixelRecall',
                                metrics['range_doppler']['recall'],
@@ -108,8 +108,8 @@ class TensorboardVisualizer:
                                metrics['range_doppler']['dice'],
                                iteration)
 
-        self.writer.add_scalar('Range_angle_metrics/PixelAccuracy',
-                               metrics['range_angle']['acc'],
+        self.writer.add_scalar('Range_angle_metrics/PixelPrecision',
+                               metrics['range_angle']['prec'],
                                iteration)
         self.writer.add_scalar('Range_angle_metrics/PixelRecall',
                                metrics['range_angle']['recall'],

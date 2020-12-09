@@ -10,7 +10,7 @@
  "nb_classes": 4,
  "nb_input_channels": 3,
  "nb_epochs": 100,
- "batch_size": 20,
+ "batch_size": 10,
  "lr": 0.001,
  "lr_step": 10,
  "loss_step": 100,

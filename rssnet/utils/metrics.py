@@ -16,19 +16,19 @@ class Evaluator:
         self.num_class = num_class
         self.confusion_matrix = np.zeros((self.num_class,) * 2)
 
-    def get_pixel_acc_class(self, harmonic_mean=False):
-        """Pixel Accuracy"""
-        acc_by_class = np.diag(self.confusion_matrix) / np.nansum(self.confusion_matrix, axis=1)
-        acc_by_class = np.nan_to_num(acc_by_class)
+    def get_pixel_prec_class(self, harmonic_mean=False):
+        """Pixel Prec"""
+        prec_by_class = np.diag(self.confusion_matrix) / np.nansum(self.confusion_matrix, axis=0)
+        prec_by_class = np.nan_to_num(prec_by_class)
         if harmonic_mean:
-            acc = hmean(acc_by_class)
+            prec = hmean(prec_by_class)
         else:
-            acc = np.mean(acc_by_class)
-        return acc, acc_by_class
+            prec = np.mean(prec_by_class)
+        return prec, prec_by_class
 
     def get_pixel_recall_class(self, harmonic_mean=False):
         """Pixel Recall"""
-        recall_by_class = np.diag(self.confusion_matrix) / np.nansum(self.confusion_matrix, axis=0)
+        recall_by_class = np.diag(self.confusion_matrix) / np.nansum(self.confusion_matrix, axis=1)
         recall_by_class = np.nan_to_num(recall_by_class)
         if harmonic_mean:
             recall = hmean(recall_by_class)
@@ -49,10 +49,10 @@ class Evaluator:
         return miou, miou_by_class
 
     def get_dice_class(self, harmonic_mean=False):
-        _, acc_by_class = self.get_pixel_acc_class()
+        _, prec_by_class = self.get_pixel_prec_class()
         _, recall_by_class = self.get_pixel_recall_class()
         # Add epsilon term to avoid /0
-        dice_by_class = 2*acc_by_class*recall_by_class/(acc_by_class + recall_by_class + 1e-8)
+        dice_by_class = 2*prec_by_class*recall_by_class/(prec_by_class + recall_by_class + 1e-8)
         if harmonic_mean:
             dice = hmean(dice_by_class)
         else:
