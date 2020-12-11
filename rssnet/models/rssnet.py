@@ -46,9 +46,9 @@ class ASPPBlock(nn.Module):
         self.global_avg_pool = nn.AvgPool2d((64, 64))
         self.conv1_1x1 = nn.Conv2d(in_ch, out_ch, kernel_size=1, padding=0, dilation=1)
         self.single_conv_block1_1x1 = ConvBlock(in_ch, out_ch, k_size=1, pad=0, dil=1)
-        self.single_conv_block1_3x3 = ConvBlock(in_ch, out_ch, k_size=1, pad=0, dil=6)
-        self.single_conv_block2_3x3 = ConvBlock(in_ch, out_ch, k_size=1, pad=0, dil=12)
-        self.single_conv_block3_3x3 = ConvBlock(in_ch, out_ch, k_size=1, pad=0, dil=18)
+        self.single_conv_block1_3x3 = ConvBlock(in_ch, out_ch, k_size=3, pad=6, dil=6)
+        self.single_conv_block2_3x3 = ConvBlock(in_ch, out_ch, k_size=3, pad=12, dil=12)
+        self.single_conv_block3_3x3 = ConvBlock(in_ch, out_ch, k_size=3, pad=18, dil=18)
 
     def forward(self, x):
         x1 = F.interpolate(self.global_avg_pool(x), size=(64, 64), align_corners=False,
