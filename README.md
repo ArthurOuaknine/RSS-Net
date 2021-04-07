@@ -32,7 +32,7 @@ $ pip uninstall rss-net
 
 ## Running the code
 
-In any case, it is .bold[mandatory] to specify both the path where the CARRADA dataset is located and the path to store the logs and models. Example: I put the Carrada folder in `/datasets`, the path I should specify is `/datasets`. The same way if I store my logs in `/root/logs`. Please run the following command lines while adapting the paths to your settings:
+In any case, it is **mandatory** to specify both the path where the CARRADA dataset is located and the path to store the logs and models. Example: I put the Carrada folder in `/datasets`, the path I should specify is `/datasets`. The same way if I store my logs in `/root/logs`. Please run the following command lines while adapting the paths to your settings:
 ```
 $ cd rss-net/rssnet/utils/
 $ python set_paths.py --carrada /datasets --logs /root/logs
